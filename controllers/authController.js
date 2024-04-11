@@ -34,6 +34,10 @@ export const signup = async (req, res) => {
     if (username.trim() == "" || email.trim() == "" || password.trim() == "") {
       res.send("All fields are required");
     }
+    const foundUser = await User.findOne({ email });
+    if (foundUser) {
+      res.send("User already exist, please Sign in.");
+    }
     const salt = bcrypt.genSalt(10);
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(password, salt, async (err, hashedPassword) => {
