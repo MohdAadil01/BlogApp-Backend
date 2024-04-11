@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import connectDatabase from "./lib/db.js";
-import authRoutes from "./routes/authRoute.js";
+import authRoutes from "./routes/authRoutes.js";
 const app = express();
 
 dotenv.config();
