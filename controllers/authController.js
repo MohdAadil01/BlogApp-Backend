@@ -28,7 +28,7 @@ export const signin = async (req, res) => {
       res
         .status(200)
         .cookie("access_token", token, { httpOnly: true })
-        .json(rest);
+        .json({ rest, token });
     });
   } catch (error) {
     res.json({ message: `Error in signing in ${error}` });
@@ -62,7 +62,7 @@ export const signup = async (req, res) => {
         res
           .status(200)
           .cookie("access-token", token, { httpOnly: true })
-          .json(rest);
+          .json({ rest, token });
       });
     });
   } catch (error) {

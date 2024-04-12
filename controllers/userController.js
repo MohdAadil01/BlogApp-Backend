@@ -66,9 +66,10 @@ export const updateUser = async (req, res) => {
           profilePicture: req.body.profilePicture,
           email: req.body.email,
         },
-      }
+      },
+      { new: true }
     );
-    const { password, ...rest } = updateUser._doc;
+    const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
   } catch (error) {
     res.status(400).send("Error in updating the user " + error);
