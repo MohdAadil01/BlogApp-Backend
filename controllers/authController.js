@@ -20,8 +20,15 @@ export const signin = async (req, res) => {
       if (!result) {
         res.send("Invalid Credentials.");
       }
+      const token = jwt.sign(
+        { id: foundUser._id, isAdmin: foundUser.isAdmin },
+        process.env.JWT_SECRET_KEY
+      );
       const { password, ...rest } = foundUser._doc;
-      res.status(200).json(rest);
+      res
+        .status(200)
+        .cookie("access_token", token, { httpOnly: true })
+        .json(rest);
     });
   } catch (error) {
     res.json({ message: `Error in signing in ${error}` });
@@ -47,8 +54,15 @@ export const signup = async (req, res) => {
           password: hashedPassword,
         });
         const user = await newUser.save();
+        const token = jwt.sign(
+          { id: user._id, isAdmin: user.isAdmin },
+          process.env.JWT_SECRET_KEY
+        );
         const { password, ...rest } = user._doc;
-        res.status(200).json(rest);
+        res
+          .status(200)
+          .cookie("access-token", token, { httpOnly: true })
+          .json(rest);
       });
     });
   } catch (error) {

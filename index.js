@@ -1,13 +1,16 @@
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import connectDatabase from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 const app = express();
 
 dotenv.config();
+
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 connectDatabase();
 

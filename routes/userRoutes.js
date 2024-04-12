@@ -6,12 +6,13 @@ import {
   updateUser,
   getAllUsers,
 } from "../controllers/userController.js";
+import { verifyToken } from "../middlewares/token.js";
 const router = express.Router();
 
-router.put("/update/:userId", updateUser);
-router.delete("/delete/:userId", deleteUser);
+router.put("/update/:userId", verifyToken, updateUser);
+router.delete("/delete/:userId", verifyToken, deleteUser);
 router.post("/signout", signout);
-router.get("/getallusers", getAllUsers);
+router.get("/getallusers", verifyToken, getAllUsers);
 router.get("/:userId", getSingleUser);
 
 export default router;

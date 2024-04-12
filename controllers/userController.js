@@ -15,6 +15,9 @@ export const getSingleUser = async (req, res) => {
   }
 };
 export const getAllUsers = async (req, res) => {
+  if (!req.user.isAdmin) {
+    res.status(400).send("You are not allowed to see all users");
+  }
   try {
     const start = parseInt(req.query.start) || 0;
     const limit = parseInt(req.query.limit) || 9;
