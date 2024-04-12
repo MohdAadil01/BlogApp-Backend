@@ -51,6 +51,46 @@ export const getAllUsers = async (req, res) => {
     res.status(400).send({ message: "Error in getting All Users " + error });
   }
 };
-export const updateUser = async (req, res) => {};
-export const deleteUser = async (req, res) => {};
-export const signout = async (req, res) => {};
+export const updateUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (req.user.id !== userId) {
+      res.status(400).send("Your are not allowed to update this user");
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      new mongoose.Types.ObjectId(userId),
+      {
+        $set: {
+          username: req.body.username,
+          password: req.body.password,
+          profilePicture: req.body.profilePicture,
+          email: req.body.email,
+        },
+      }
+    );
+    const { password, ...rest } = updateUser._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    res.status(400).send("Error in updating the user " + error);
+  }
+};
+export const deleteUser = async (req, res) => {
+  try {
+    if (!req.user.isAdmin && req.user.id !== req.params.userId) {
+      res.send("You are not allowed to delelte the user");
+    }
+    await User.findByIdAndDelete(
+      new mongoose.Types.ObjectId(req.params.userId)
+    );
+    res.status(200).send("User has been deleted");
+  } catch (error) {
+    res.status(400).send("Error in deleting the user " + error);
+  }
+};
+export const signout = async (req, res) => {
+  try {
+    res.clearCookie("acces_token").status(200).send("Sign out successfully.");
+  } catch (error) {
+    res.status(400).send("Error in signing out the user " + error);
+  }
+};

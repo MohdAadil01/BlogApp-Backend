@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token;
   if (!token) {
-    res.status(400).send("Unauthorized");
+    res.status(400).send("Please Login/Sign Up to continue");
   }
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
     if (err) {
