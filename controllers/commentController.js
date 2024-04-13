@@ -58,7 +58,7 @@ export const editComment = async (req, res) => {
     if (!foundComment) {
       res.status(200).send("Comment not found.");
     }
-    if (foundComment.userId !== req.user.id) {
+    if (foundComment.userId !== req.user.id && !req.user.isAdmin) {
       res.status(200).send("You are not allowed to edit this comment");
     }
     const editedComment = await Comment.findByIdAndUpdate(
@@ -83,7 +83,7 @@ export const deleteComment = async (req, res) => {
     if (!foundComment) {
       res.status(200).send("Comment not found.");
     }
-    if (foundComment.userId !== req.user.id || !req.user.isAdmin) {
+    if (foundComment.userId !== req.user.id && !req.user.isAdmin) {
       res.status(200).send("You are not allowed to delete this comment");
     }
     await Comment.findByIdAndDelete(commentId);
