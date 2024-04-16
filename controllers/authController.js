@@ -6,11 +6,13 @@ export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (email.trim() == "" || password.trim() == "") {
-      return res.send("Please Enter all fields");
+      return res.status(400).json({ error: "Please Enter all fields" });
     }
     const foundUser = await User.findOne({ email });
     if (!foundUser) {
-      return res.send("User does not exist, Please create your account first.");
+      return res.status(400).json({
+        error: "User does not exist, Please create your account first.",
+      });
     }
     const hashedPasswordFromDatabase = foundUser.password;
     bcrypt.compare(password, hashedPasswordFromDatabase, (err, result) => {
@@ -18,7 +20,7 @@ export const signin = async (req, res) => {
         console.log("Error in matching password" + err);
       }
       if (!result) {
-        return res.send("Invalid Credentials.");
+        return res.status(400).json({ error: "Invalid Credentials." });
       }
       const token = jwt.sign(
         { id: foundUser._id, isAdmin: foundUser.isAdmin },
@@ -46,11 +48,13 @@ export const signup = async (req, res) => {
       email === "" ||
       password === ""
     ) {
-      return res.send("All fields are required");
+      return res.status(400).json({ error: "All fields are required" });
     }
     const foundUser = await User.findOne({ email });
     if (foundUser) {
-      return res.send("User already exist, please Sign in.");
+      return res
+        .status(400)
+        .json({ error: "User already exist, please Sign in." });
     }
     const salt = bcrypt.genSalt(10);
     bcrypt.genSalt(10, (err, salt) => {
