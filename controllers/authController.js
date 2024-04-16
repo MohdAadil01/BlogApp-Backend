@@ -6,11 +6,11 @@ export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (email.trim() == "" || password.trim() == "") {
-      res.send("Please Enter all fields");
+      return res.send("Please Enter all fields");
     }
     const foundUser = await User.findOne({ email });
     if (!foundUser) {
-      res.send("User does not exist, Please create your account first.");
+      return res.send("User does not exist, Please create your account first.");
     }
     const hashedPasswordFromDatabase = foundUser.password;
     bcrypt.compare(password, hashedPasswordFromDatabase, (err, result) => {
@@ -18,7 +18,7 @@ export const signin = async (req, res) => {
         console.log("Error in matching password" + err);
       }
       if (!result) {
-        res.send("Invalid Credentials.");
+        return res.send("Invalid Credentials.");
       }
       const token = jwt.sign(
         { id: foundUser._id, isAdmin: foundUser.isAdmin },
@@ -38,12 +38,19 @@ export const signin = async (req, res) => {
 export const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    if (username.trim() == "" || email.trim() == "" || password.trim() == "") {
-      res.send("All fields are required");
+    if (
+      !username ||
+      !email ||
+      !password ||
+      username === "" ||
+      email === "" ||
+      password === ""
+    ) {
+      return res.send("All fields are required");
     }
     const foundUser = await User.findOne({ email });
     if (foundUser) {
-      res.send("User already exist, please Sign in.");
+      return res.send("User already exist, please Sign in.");
     }
     const salt = bcrypt.genSalt(10);
     bcrypt.genSalt(10, (err, salt) => {

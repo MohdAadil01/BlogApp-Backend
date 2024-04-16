@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDatabase from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -13,6 +14,7 @@ dotenv.config();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(cors());
 
 connectDatabase();
 

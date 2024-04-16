@@ -6,7 +6,7 @@ export const getSingleUser = async (req, res) => {
     const userId = new mongoose.Types.ObjectId(req.params.userId);
     const foundUser = await User.findById(userId);
     if (!foundUser) {
-      res.status(400).send("User does not exist");
+      return res.status(400).send("User does not exist");
     }
     const { password, ...rest } = foundUser._doc;
     res.status(200).json(rest);
@@ -16,7 +16,7 @@ export const getSingleUser = async (req, res) => {
 };
 export const getAllUsers = async (req, res) => {
   if (!req.user.isAdmin) {
-    res.status(400).send("You are not allowed to see all users");
+    return res.status(400).send("You are not allowed to see all users");
   }
   try {
     const start = parseInt(req.query.start) || 0;
@@ -55,7 +55,7 @@ export const updateUser = async (req, res) => {
   try {
     const userId = req.params.userId;
     if (req.user.id !== userId) {
-      res.status(400).send("Your are not allowed to update this user");
+      return res.status(400).send("Your are not allowed to update this user");
     }
     const updatedUser = await User.findByIdAndUpdate(
       new mongoose.Types.ObjectId(userId),
@@ -78,7 +78,7 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     if (!req.user.isAdmin && req.user.id !== req.params.userId) {
-      res.send("You are not allowed to delelte the user");
+      return res.send("You are not allowed to delelte the user");
     }
     await User.findByIdAndDelete(
       new mongoose.Types.ObjectId(req.params.userId)

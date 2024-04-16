@@ -4,7 +4,7 @@ export const createComment = async (req, res) => {
   try {
     const { content, postId, userId } = req.body;
     if (userId !== req.user.id) {
-      res.status(200).send("You are not allowed to create comment.");
+      return res.status(200).send("You are not allowed to create comment.");
     }
     const newComment = new Comment({
       content,
@@ -23,7 +23,7 @@ export const getPostComments = async (req, res) => {
     const foundComments = await Comment.find(postId).sort({
       createdAt: -1,
     });
-    res.status(200).json(foundComments);
+    return res.status(200).json(foundComments);
   } catch (error) {
     res.status(400).send("Error in getting post comments " + error);
   }
@@ -34,7 +34,7 @@ export const likeComment = async (req, res) => {
     const { commentId } = req.params;
     const foundComment = await Comment.findById(commentId);
     if (!foundComment) {
-      res.status(200).send("No comments Found");
+      return res.status(200).send("No comments Found");
     }
     const user = foundComment.likes.indexOf(req.user.id);
     if (user === -1) {
@@ -56,10 +56,10 @@ export const editComment = async (req, res) => {
     const { commentId } = req.params;
     const foundComment = await Comment.findById(commentId);
     if (!foundComment) {
-      res.status(200).send("Comment not found.");
+      return res.status(200).send("Comment not found.");
     }
     if (foundComment.userId !== req.user.id && !req.user.isAdmin) {
-      res.status(200).send("You are not allowed to edit this comment");
+      return res.status(200).send("You are not allowed to edit this comment");
     }
     const editedComment = await Comment.findByIdAndUpdate(
       commentId,
@@ -81,10 +81,10 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
     const foundComment = await Comment.findById(commentId);
     if (!foundComment) {
-      res.status(200).send("Comment not found.");
+      return res.status(200).send("Comment not found.");
     }
     if (foundComment.userId !== req.user.id && !req.user.isAdmin) {
-      res.status(200).send("You are not allowed to delete this comment");
+      return res.status(200).send("You are not allowed to delete this comment");
     }
     await Comment.findByIdAndDelete(commentId);
     res.status(200).send("Comment deleted successfully");
@@ -95,7 +95,7 @@ export const deleteComment = async (req, res) => {
 
 export const getComments = async (req, res) => {
   if (!req.user.isAdmin) {
-    res.status(200).send("You are not allowed to get all comments.");
+    return res.status(200).send("You are not allowed to get all comments.");
   }
   try {
     const start = parseInt(req.query.start) || 0;

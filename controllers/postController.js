@@ -3,11 +3,11 @@ import Post from "../models/Post.js";
 export const create = async (req, res) => {
   try {
     if (!req.user.isAdmin) {
-      res.status(200).json("You are not allowed to create post.");
+      return res.status(200).json("You are not allowed to create post.");
     }
     const { title, content } = req.body;
     if (title.trim() === "" || content.trim() == "") {
-      res.status(200).send("Please provide all fields");
+      return res.status(200).send("Please provide all fields");
     }
 
     const slug = req.body.title
@@ -77,7 +77,7 @@ export const deletepost = async (req, res) => {
   try {
     const { postId, userId } = req.params;
     if (!req.user.isAdmin || req.user.id !== userId) {
-      res.status(200).json("You are not allowed to delete this post");
+      return res.status(400).json("You are not allowed to delete this post");
     }
     await Post.findByIdAndDelete(postId);
     res.status(200).send("Successfully deleted the post.");
@@ -89,7 +89,7 @@ export const updatepost = async (req, res) => {
   try {
     const { postId, userId } = req.params;
     if (!req.user.isAdmin || req.user.id !== userId) {
-      res.status(200).json("You are not allowed to update this post");
+      return res.status(200).json("You are not allowed to update this post");
     }
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
